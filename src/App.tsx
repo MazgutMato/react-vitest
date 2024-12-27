@@ -3,7 +3,11 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-function App({ name = "World" }: { name: string }) {
+interface AppProps {
+  name?: string
+}
+
+function App({ name = "World" }: AppProps) {
   const [count, setCount] = useState(0)
 
   return (
@@ -18,9 +22,9 @@ function App({ name = "World" }: { name: string }) {
       </div>
       <h1>Hello {name}</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        {name !== "World" && <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
+        </button>}
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

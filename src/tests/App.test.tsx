@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import App from '../App'
+import userEvent from '@testing-library/user-event'
 
 describe('App', () => {
     it('should render the App component with heading', () => {
@@ -33,5 +34,18 @@ describe('App', () => {
         const button = screen.queryByRole("button")
 
         expect(button).not.toBeInTheDocument()
+    })
+
+    it('should increase count after click on button', async () => {
+        render(<App name='Mato' />)
+
+        const button = screen.getByRole("button")
+        expect(button).toBeInTheDocument()
+
+        const user = userEvent.setup()
+        await user.click(button)
+
+        expect(screen.queryByText("count is 0")).not.toBeInTheDocument()
+        expect(screen.getByText("count is 1")).toBeInTheDocument()
     })
 })

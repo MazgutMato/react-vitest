@@ -3,49 +3,55 @@ import App from '../App'
 import userEvent from '@testing-library/user-event'
 
 describe('App', () => {
-    it('should render the App component with heading', () => {
-        render(<App />)
+    const renderApp = (name?: string) => {
+        render(<App name={name} />)
 
-        const heading = screen.getByRole('heading')
+        const heading = screen.queryByRole('heading')
+        const button = screen.queryByRole('button')
+
+        return { heading, button }
+    }
+
+
+    it('should render the App component with not heading', () => {
+        const { heading } = renderApp()
+
+        expect(heading).toBeInTheDocument()
+    })
+
+    it('should render the App component with heading Hello World', () => {
+        const { heading } = renderApp()
 
         expect(heading).toBeInTheDocument()
         expect(heading).toHaveTextContent(/Hello World/i)
     })
 
-    it('should render the App component with heading Hello World', () => {
-        render(<App />)
-
-        const heading = screen.getByText("Hello World")
-
-        expect(heading).toBeInTheDocument()
-    })
-
     it('should render the App component with button if name is defined', () => {
-        render(<App name='Mato' />)
-
-        const button = screen.getByRole("button")
+        const { button } = renderApp("Mato")
 
         expect(button).toBeInTheDocument()
     })
 
     it('should render the App component without button if name is not defined', () => {
-        render(<App />)
-
-        const button = screen.queryByRole("button")
+        const { button } = renderApp()
 
         expect(button).not.toBeInTheDocument()
     })
 
     it('should increase count after click on button', async () => {
-        render(<App name='Mato' />)
+        const { button } = renderApp("Mato")
 
-        const button = screen.getByRole("button")
         expect(button).toBeInTheDocument()
 
         const user = userEvent.setup()
-        await user.click(button)
 
-        expect(screen.queryByText("count is 0")).not.toBeInTheDocument()
-        expect(screen.getByText("count is 1")).toBeInTheDocument()
+        if (button) {
+            await user.click(button)
+
+            expect(screen.queryByText("count is 0")).not.toBeInTheDocument()
+            expect(screen.getByText("count is 1")).toBeInTheDocument()
+        } else {
+            expect(button).toBeInTheDocument()
+        }
     })
 })

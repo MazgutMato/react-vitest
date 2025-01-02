@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Search from './components/Search'
 import { Flex } from 'antd'
+import { useState } from 'react'
+import './App.css'
+import reactLogo from './assets/react.svg'
+import Search from './components/Search'
+import Taglist from './components/Taglist'
+import viteLogo from '/vite.svg'
 
 interface AppProps {
   name?: string
@@ -30,6 +31,8 @@ function App({ name = "World" }: AppProps) {
         </button>}
         <Search onChange={(value) => console.log(value)} />
       </Flex>
+
+      <Taglist />
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more

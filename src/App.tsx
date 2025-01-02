@@ -2,6 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Search from './components/Search'
+import { Flex } from 'antd'
 
 interface AppProps {
   name?: string
@@ -21,14 +23,14 @@ function App({ name = "World" }: AppProps) {
         </a>
       </div>
       <h1>Hello {name}</h1>
-      <div className="card">
+
+      <Flex vertical gap={10}>
         {name !== "World" && <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>}
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
+        <Search onChange={(value) => console.log(value)} />
+      </Flex>
+
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

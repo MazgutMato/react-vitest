@@ -7,7 +7,7 @@ describe('App', () => {
         render(<App name={name} />)
 
         const heading = screen.queryByRole('heading')
-        const button = screen.queryByRole('button')
+        const button = screen.queryByRole('button', { name: /count is/i })
 
         return { heading, button }
     }

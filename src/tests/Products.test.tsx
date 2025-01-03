@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import Products from '../components/Products'
+import Products from '../components/products/Products'
 import { server } from './mocks/server'
 import { http, HttpResponse } from 'msw'
 

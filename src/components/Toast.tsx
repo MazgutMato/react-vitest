@@ -17,10 +17,15 @@ export default function Toast() {
     return (
         <>
             {contextHolder}
-            <Button type="primary" onClick={() => {
-                openNotification('topLeft')
-            }}
-            >Open</Button>
+            <Button
+                style={{ width: '100%' }}
+                type="primary" onClick={() => {
+                    openNotification('topLeft')
+                }
+                }
+            >
+                Show toast
+            </Button>
         </>
     )
 }

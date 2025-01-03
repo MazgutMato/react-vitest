@@ -7,6 +7,7 @@ import Taglist from './components/Taglist'
 import viteLogo from '/vite.svg'
 import Toast from './components/Toast'
 import ToastProvider from './components/ToastProvider'
+import SelectBox from './components/SelectBox'
 
 interface AppProps {
   name?: string
@@ -16,7 +17,13 @@ function App({ name = "World" }: AppProps) {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorText: '#000',
+        }
+      }}
+    >
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -32,18 +39,22 @@ function App({ name = "World" }: AppProps) {
           count is {count}
         </Button>}
         <Search onChange={(value) => console.log(value)} />
+
+
+        <Taglist />
+
+        <ToastProvider>
+          <Toast />
+        </ToastProvider>
+
+        {/* <SelectBox /> */}
+
       </Flex>
-
-      <Taglist />
-
-      <ToastProvider>
-        <Toast />
-      </ToastProvider>
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
+    </ConfigProvider>
   )
 }
 

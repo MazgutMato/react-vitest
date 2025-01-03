@@ -7,13 +7,14 @@ describe('App', () => {
         render(<App name={name} />)
 
         const heading = screen.queryByRole('heading')
+
         const button = screen.queryByRole('button', { name: /count is/i })
 
         return { heading, button }
     }
 
 
-    it('should render the App component with not heading', () => {
+    it('should render the App component without heading', () => {
         const { heading } = renderApp()
 
         expect(heading).toBeInTheDocument()
@@ -53,5 +54,12 @@ describe('App', () => {
         } else {
             expect(button).toBeInTheDocument()
         }
+    })
+
+    it('should fetch categories from mock server', async () => {
+        const response = await fetch('categories')
+        const data = await response.json()
+
+        expect(data).toHaveLength(3)
     })
 })

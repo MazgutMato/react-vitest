@@ -16,6 +16,9 @@ export default function Products() {
         const response = await fetch('products')
         const data = await response.json()
 
+        console.log(data);
+
+
         setProducts(data)
         setLoading(false)
     }

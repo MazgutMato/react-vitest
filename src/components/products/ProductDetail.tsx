@@ -46,8 +46,8 @@ export default function ProductDetail({ id }: { id: number }) {
 
     return (
         <div>
-            <h1>{product.name}</h1>
-            <p>{product.price}</p>
+            <h1>Name: {product.name}</h1>
+            <p>Price: {`${product.price}$`}</p>
         </div>
     )
 }

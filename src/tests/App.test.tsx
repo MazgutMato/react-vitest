@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import App from '../App'
 import userEvent from '@testing-library/user-event'
+import { faker } from '@faker-js/faker'
+import { db } from './mocks/db'
+
 
 describe('App', () => {
     const renderApp = (name?: string) => {
@@ -56,10 +59,15 @@ describe('App', () => {
         }
     })
 
-    it('should fetch categories from mock server', async () => {
-        const response = await fetch('categories')
-        const data = await response.json()
+    it('should generate fake data', () => {
+        // const data = {
+        //     name: faker.commerce.productName(),
+        //     price: faker.commerce.price({ min: 10, max: 100 }),
+        // }
 
-        expect(data).toHaveLength(3)
+        const product = db.product.create()
+
+        expect(product).toHaveProperty('name')
+        expect(product).toHaveProperty('price')
     })
 })

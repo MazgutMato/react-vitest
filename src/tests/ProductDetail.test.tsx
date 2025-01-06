@@ -53,4 +53,18 @@ describe('ProductDetails', () => {
 
         expect(message).toBeInTheDocument()
     })
+
+    it('should render an error if there is error message', async () => {
+        server.use(
+            http.get("products /1", () => {
+                return HttpResponse.error()
+            })
+        )
+
+        render(<ProductDetail id={1} />)
+
+        screen.debug()
+
+        expect(await screen.findByText(/error/i)).toBeInTheDocument()
+    })
 })

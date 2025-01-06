@@ -36,7 +36,7 @@ export default function ProductDetail({ id }: { id: number }) {
         return <Spin />
     }
 
-    if (error) {
+    if (error !== "") {
         return <p>Error: {error}</p>
     }
 

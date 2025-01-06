@@ -3,6 +3,7 @@ import Products from '../components/products/Products'
 import { server } from './mocks/server'
 import { http, HttpResponse } from 'msw'
 import { db } from './mocks/db'
+import ProductDetail from '../components/products/ProductDetail'
 
 describe('Products', () => {
     const productIds: Array<number> = []
@@ -37,5 +38,17 @@ describe('Products', () => {
 
         const message = await screen.findByText(/no products found/i)
         expect(message).toBeInTheDocument()
+    })
+
+    it('should an error message when there is error', async () => {
+        server.use(
+            http.get("products", () => {
+                return HttpResponse.error()
+            })
+        )
+
+        render(<Products />)
+
+        expect(await screen.findByText(/error/i)).toBeInTheDocument()
     })
 })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Spin } from 'antd'
 import React from 'react'
 
@@ -9,18 +10,21 @@ export interface Product {
 export default function Products() {
     const [products, setProducts] = React.useState<Array<Product>>([])
     const [loading, setLoading] = React.useState(true)
+    const [error, setError] = React.useState<string>("")
 
     async function fetchProducts() {
         setLoading(true)
 
-        const response = await fetch('products')
-        const data = await response.json()
+        try {
+            const response = await fetch('products')
+            const data = await response.json()
 
-        console.log(data);
-
-
-        setProducts(data)
-        setLoading(false)
+            setProducts(data)
+        } catch (error: any) {
+            setError(error.message)
+        } finally {
+            setLoading(false)
+        }
     }
 
     React.useEffect(() => {
@@ -29,6 +33,10 @@ export default function Products() {
 
     if (loading) {
         return <Spin />
+    }
+
+    if (error !== "") {
+        return <p>Error: {error}</p>
     }
 
     if (!products.length) {

@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Spin } from 'antd'
-import React from 'react'
+import axios from 'axios'
+import { useQuery } from 'react-query'
 
 export interface Product {
     id: number
@@ -8,44 +8,33 @@ export interface Product {
 }
 
 export default function Products() {
-    const [products, setProducts] = React.useState<Array<Product>>([])
-    const [loading, setLoading] = React.useState(true)
-    const [error, setError] = React.useState<string>("")
+    const { data, error, isLoading } = useQuery<Product[], Error>({
+        queryKey: ['products'],
+        queryFn: async () => {
+            const response = await axios.get<Product[]>('/products')
 
-    async function fetchProducts() {
-        setLoading(true)
-
-        try {
-            const response = await fetch('products')
-            const data = await response.json()
-
-            setProducts(data)
-        } catch (error: any) {
-            setError(error.message)
-        } finally {
-            setLoading(false)
+            return response.data
         }
+    })
+
+    console.log("Data: ", data);
+
+
+    if (isLoading) {
+        return <Spin>Loading</Spin>
     }
 
-    React.useEffect(() => {
-        fetchProducts()
-    }, [])
-
-    if (loading) {
-        return <Spin />
+    if (error) {
+        return <p>Error: {error.message}</p>
     }
 
-    if (error !== "") {
-        return <p>Error: {error}</p>
-    }
-
-    if (!products.length) {
+    if (data && !data.length) {
         return <p>No products found</p>
     }
 
     return (
         <ul>
-            {products.map(product => (
+            {data && data.map(product => (
                 <li key={product.id}>{product.name}</li>
             ))}
         </ul>

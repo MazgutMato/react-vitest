@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import ProductDetail from '../components/products/ProductDetail'
 import { db } from './mocks/db'
 import { server } from './mocks/server'
@@ -47,8 +47,6 @@ describe('ProductDetails', () => {
     it('should render error for invalid product id ', async () => {
         render(<ProductDetail id={0} />)
 
-        screen.debug()
-
         const message = await screen.findByText(/invalid/i)
 
         expect(message).toBeInTheDocument()
@@ -56,15 +54,13 @@ describe('ProductDetails', () => {
 
     it('should render an error if there is error message', async () => {
         server.use(
-            http.get("products /1", () => {
+            http.get("products/1", () => {
                 return HttpResponse.error()
             })
         )
 
         render(<ProductDetail id={1} />)
 
-        screen.debug()
-
         expect(await screen.findByText(/error/i)).toBeInTheDocument()
-    })
+    })    
 })

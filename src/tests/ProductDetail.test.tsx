@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import { delay, http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw'
 import ProductDetail from '../components/products/ProductDetail'
 import { db } from './mocks/db'
 import { server } from './mocks/server'
+import ReactQueryProvider from '../providers/ReactQueryProvider'
 
 describe('ProductDetails', () => {
     const productIds: Array<number> = []
@@ -21,7 +22,7 @@ describe('ProductDetails', () => {
     it('should render product details', async () => {
         const id = productIds[0]
 
-        render(<ProductDetail id={id} />)
+        render(<ProductDetail id={id} />, { wrapper: ReactQueryProvider })
 
         const product = db.product.findFirst({ where: { id: { equals: id } } })
 
@@ -37,7 +38,7 @@ describe('ProductDetails', () => {
             )
         )
 
-        render(<ProductDetail id={1} />)
+        render(<ProductDetail id={1} />, { wrapper: ReactQueryProvider })
 
         const message = await screen.findByText(/No product found/)
 
@@ -45,7 +46,7 @@ describe('ProductDetails', () => {
     })
 
     it('should render error for invalid product id ', async () => {
-        render(<ProductDetail id={0} />)
+        render(<ProductDetail id={0} />, { wrapper: ReactQueryProvider })
 
         const message = await screen.findByText(/invalid/i)
 
@@ -59,8 +60,10 @@ describe('ProductDetails', () => {
             })
         )
 
-        render(<ProductDetail id={1} />)
+        render(<ProductDetail id={1} />, { wrapper: ReactQueryProvider })
+
+        screen.debug()
 
         expect(await screen.findByText(/error/i)).toBeInTheDocument()
-    })    
+    })
 })

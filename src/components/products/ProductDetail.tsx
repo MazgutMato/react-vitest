@@ -1,43 +1,30 @@
 import React from 'react'
 import { Product } from './Products'
 import { Spin } from 'antd'
+import { useQuery } from 'react-query'
+import axios from 'axios'
 
 interface ProductWithDetail extends Product {
     price: number
 }
 
 export default function ProductDetail({ id }: { id: number }) {
-    const [product, setProduct] = React.useState<ProductWithDetail | null>(null)
-    const [loading, setLoading] = React.useState(false)
-    const [error, setError] = React.useState<string>("")
+    const { data: product, isLoading: loading, error } = useQuery<ProductWithDetail, Error>({
+        queryKey: ["products", id],
+        queryFn: () => axios.get<ProductWithDetail>(`/products/${id}`).then((response) => response.data),
+    })
 
-    React.useEffect(() => {
-        if (!id) {
-            setError("Invalid product id")
-            return
-        }
 
-        setLoading(true)
+    if (!id) {
+        return <p>Invalid product if</p>
+    }
 
-        //fetch product by id
-        fetch(`products/${id}`)
-            .then(response => response.json())
-            .then((data: ProductWithDetail) => {
-                setProduct(data)
-                setLoading(false)
-            })
-            .catch(error => {
-                setError(error.message)
-                setLoading(false)
-            })
-    }, [id])
+    if (error) {
+        return <p>Error: {error.message}</p>
+    }
 
     if (loading) {
         return <Spin />
-    }
-
-    if (error !== "") {
-        return <p>Error: {error}</p>
     }
 
     if (!product) {

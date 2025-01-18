@@ -16,8 +16,7 @@ export default function Products() {
             return response.data
         }
     })
-
-    console.log("Data: ", data);
+    
 
 
     if (isLoading) {

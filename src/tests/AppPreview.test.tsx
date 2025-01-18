@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import App from '../App'
+import App from '../AppPreiview'
 import userEvent from '@testing-library/user-event'
 import { faker } from '@faker-js/faker'
 import { db } from './mocks/db'

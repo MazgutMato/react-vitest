@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "server": "json-server --watch src/data/db.json"
+    "server": "json-server --delay 500 --watch src/data/db.json"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.3",
@@ -19,7 +19,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.22.7",
     "axios": "^1.7.9",
-    "json-server": "^1.0.0-beta.3",
+    "json-server": "^0.17.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-query": "^3.39.3"
@@ -42,6 +42,7 @@
     "jsdom": "^25.0.1",
     "msw": "^2.7.0",
     "react-loading-skeleton": "^3.3.1",
+    "resize-observer-polyfill": "^1.5.1",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",

@@ -62,8 +62,6 @@ describe('ProductDetails', () => {
 
         render(<ProductDetail id={1} />, { wrapper: ReactQueryProvider })
 
-        screen.debug()
-
         expect(await screen.findByText(/error/i)).toBeInTheDocument()
     })
 })

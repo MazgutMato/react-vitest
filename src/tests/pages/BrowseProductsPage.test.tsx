@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Category, Product } from '../../entities'
 import BrowseProducts from '../../pages/BrowseProductsPage'
 import { CartProvider } from '../../providers/CartProvider'
-import { db } from '../mocks/db'
+import { db, getProductsByCategory } from '../mocks/db'
 import { simulateDelay, simulateError } from '../utils'
 
 describe('BrowseProductPage', () => {
@@ -26,16 +26,6 @@ describe('BrowseProductPage', () => {
         db.category.deleteMany({ where: { id: { in: categories.map(category => category.id) } } })
         db.product.deleteMany({ where: { id: { in: products.map(product => product.id) } } })
     })
-
-    function renderComponent() {
-        render(<Theme><CartProvider><BrowseProducts /></CartProvider></Theme>)
-
-        return {
-            categoriesProgress: () => screen.getByRole('progressbar', { name: /categories/i }),
-            productsProgress: () => screen.getByRole('progressbar', { name: /products/i }),
-            combobox: () => screen.queryByRole("combobox"),
-        }
-    }
 
     it('should show the loading skaleton before categories are fetched', () => {
         simulateDelay("/categories")
@@ -86,16 +76,9 @@ describe('BrowseProductPage', () => {
     })
 
     it('should render categories', async () => {
-        const { categoriesProgress, combobox } = renderComponent()
+        const { openCombobox } = renderComponent()
 
-        await waitForElementToBeRemoved(categoriesProgress)
-
-        expect(combobox()).toBeInTheDocument()
-
-        const user = userEvent.setup()
-        await user.click(combobox()!)
-
-        expect(screen.getByRole('option', { name: /all/i })).toBeInTheDocument()
+        await openCombobox()
 
         categories.forEach(category => {
             expect(screen.getByRole('option', { name: category.name })).toBeInTheDocument()
@@ -103,53 +86,68 @@ describe('BrowseProductPage', () => {
     })
 
     it('should render products', async () => {
-        const { productsProgress } = renderComponent()
+        const { productsProgress, expectProductsToBeInDocument } = renderComponent()
 
         await waitForElementToBeRemoved(productsProgress)
 
-        products.forEach(product => {
-            expect(screen.getByText(product.name)).toBeInTheDocument()
-        })
+        expectProductsToBeInDocument(products)
     })
 
     it('should filter products by category', async () => {
-        const { categoriesProgress, combobox: getCategoriesCombobox } = renderComponent()
-
-        await waitForElementToBeRemoved(categoriesProgress)
-        const combobox = getCategoriesCombobox()
-        const user = userEvent.setup()
-        await user.click(combobox!)
+        const { selectCategory, expectProductsToBeInDocument } = renderComponent()
 
         const selectedCategory = categories[0]
-        const option = screen.getByRole('option', { name: selectedCategory.name })
-        await user.click(option)
+        await selectCategory(new RegExp(selectedCategory.name))
 
-        const products = db.product.findMany({ where: { categoryId: { equals: selectedCategory.id } } })
-        const rows = screen.getAllByRole('row')
-        expect(rows).toHaveLength(products.length + 1)
-
-        products.forEach(product => {
-            expect(screen.getByText(product.name)).toBeInTheDocument()
-        })
+        const products = getProductsByCategory(selectedCategory.id)
+        expectProductsToBeInDocument(products)
     })
 
     it('should view all pruducts when select all', async () => {
-        const { categoriesProgress, combobox: getCategoriesCombobox } = renderComponent()
+        const { selectCategory, expectProductsToBeInDocument } = renderComponent()
 
-        await waitForElementToBeRemoved(categoriesProgress)
-        const combobox = getCategoriesCombobox()
-        const user = userEvent.setup()
-        await user.click(combobox!)
-
-        const option = screen.getByRole('option', { name: /all/i })
-        await user.click(option)
+        await selectCategory(/all/i)
 
         const products = db.product.getAll()
-        const rows = screen.getAllByRole('row')
-        expect(rows).toHaveLength(products.length + 1)
-
-        products.forEach(product => {
-            expect(screen.getByText(product.name)).toBeInTheDocument()
-        })
+        expectProductsToBeInDocument(products)
     })
+
+    function renderComponent() {
+        render(<Theme><CartProvider><BrowseProducts /></CartProvider></Theme>)
+
+        const getCategoriesProgress = () => screen.getByRole('progressbar', { name: /categories/i })
+        const getCategoriesCombobox = () => screen.queryByRole("combobox")
+        const openCombobox = async () => {
+            await waitForElementToBeRemoved(getCategoriesProgress)
+            const combobox = getCategoriesCombobox()
+            const user = userEvent.setup()
+            await user.click(combobox!)
+        }
+
+        const expectProductsToBeInDocument = (products: Product[]) => {
+            const rows = screen.getAllByRole('row')
+            expect(rows).toHaveLength(products.length + 1)
+
+            products.forEach(product => {
+                expect(screen.getByText(product.name)).toBeInTheDocument()
+            })
+        }
+
+
+        return {
+            expectProductsToBeInDocument,
+            categoriesProgress: getCategoriesProgress,
+            productsProgress: () => screen.getByRole('progressbar', { name: /products/i }),
+            combobox: getCategoriesCombobox,
+            openCombobox: openCombobox,
+            selectCategory: async (category: RegExp = /all/i) => {
+                await openCombobox()
+
+                const user = userEvent.setup()
+
+                const option = screen.getByRole('option', { name: category })
+                await user.click(option)
+            }
+        }
+    }
 })

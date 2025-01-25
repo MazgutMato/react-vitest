@@ -2,6 +2,7 @@ import React from 'react'
 import BrowseProducts from './pages/BrowseProductsPage'
 import Providers from './providers'
 import { Layout } from 'antd'
+import ProductForm from './components/ProductForm'
 
 export default function App() {
     return (
@@ -12,7 +13,7 @@ export default function App() {
                     padding: "20px",
                 }}
             >
-                <BrowseProducts />
+                <ProductForm onSubmit={async () => { console.log("Submit") }} />
             </Layout>
         </Providers>
     )

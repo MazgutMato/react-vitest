@@ -1,20 +1,11 @@
-import React from 'react'
-import BrowseProducts from './pages/BrowseProductsPage'
+import Layout from './pages/Layout'
 import Providers from './providers'
-import { Layout } from 'antd'
-import ProductForm from './components/ProductForm'
+import "./App.css"
 
 export default function App() {
     return (
         <Providers>
-            <Layout
-                style={{
-                    width: "100%",
-                    padding: "20px",
-                }}
-            >
-                <ProductForm onSubmit={async () => { console.log("Submit") }} />
-            </Layout>
+            <Layout />
         </Providers>
     )
 }

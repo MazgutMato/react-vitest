@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
-import ProductForm from '../../components/ProductForm'
-import Providers from '../../providers'
-import { Category, Product } from '../../entities'
-import { db } from '../mocks/db'
 import userEvent from '@testing-library/user-event'
 import { Toaster } from 'react-hot-toast'
+import ProductForm from '../../components/ProductForm'
+import { Category, Product } from '../../entities'
+import TestProviders from '../../providers/TestProviders'
+import { db } from '../mocks/db'
 
 describe('ProductForm', () => {
     const categories: Array<Category> = []
@@ -28,7 +28,9 @@ describe('ProductForm', () => {
             <>
                 <ProductForm product={product} onSubmit={onSubmit} />
                 <Toaster />
-            </>, { wrapper: Providers })
+            </>, {
+            wrapper: TestProviders
+        })
 
         return {
             onSubmit: onSubmit,
